@@ -1,0 +1,66 @@
+# ---------------------------------------------------------------------------
+# Hard rule: NO proprietary Tencent binaries in this repository.
+#
+# WorkBuddy AI / CodeBuddy are proprietary products of Tencent. This project is
+# a build toolchain only — it converts a DMG that YOU download from the vendor
+# into a package on YOUR machine. Redistributing the converted application, the
+# DMG, the .deb/.rpm/AppImage output, or any extracted vendor payload would be
+# unauthorised redistribution. Everything below is therefore ignored.
+# ---------------------------------------------------------------------------
+
+# Converted application and packaging output
+/app/
+/dist/
+/out/
+upstream/deb-tool/dist/
+upstream/deb-tool/out/
+
+# Upstream toolchains, fetched by ./bootstrap.sh at pinned commits.
+# Never vendored: see bootstrap.sh for the rationale.
+/upstream/
+
+# Downloaded vendor artifacts
+*.dmg
+*.pkg
+*.exe
+*.msi
+*.zip
+*.deb
+*.rpm
+*.AppImage
+*.AppImage.zsync
+*.tar.gz
+*.tar.xz
+*.tar.zst
+
+# Extracted vendor payloads
+app.asar
+app.asar.unpacked/
+resources/
+*.node
+electron
+
+# Build scratch space
+/.tmp/
+/logs/
+/.npmcache/
+/.apphome/
+*.log
+
+# Screenshots captured during verification runs
+/*.png
+/scripts/*.png
+
+# ---------------------------------------------------------------------------
+# Runtime / editor
+# ---------------------------------------------------------------------------
+node_modules/
+__pycache__/
+*.py[cod]
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
+*.code-workspace

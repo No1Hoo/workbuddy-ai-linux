@@ -1,0 +1,50 @@
+MIT License
+
+Copyright (c) 2026 workbuddy-ai-linux contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---------------------------------------------------------------------------
+THIRD-PARTY NOTICES
+
+This repository is a build driver. It contains no upstream source code; the
+toolchains it orchestrates are fetched at pinned commits by ./bootstrap.sh.
+The packaging patch under patches/ is a derivative work of the project below
+and is distributed under the same terms.
+
+1. LX2000WASD/workbuddy-international-linux
+   https://github.com/LX2000WASD/workbuddy-international-linux
+   MIT License — Copyright (c) 2026 workbuddy-international-linux contributors
+   MIT License — Copyright (c) 2026 Zeongit J. (LICENSE.port-tool)
+   Fetched at commit c2b731cf0fa566306c89697ef95c472d17525a93.
+   Consumed unmodified: converts the official macOS DMG into a Linux app tree.
+
+2. Xboxpig/workbuddy-desktop-linux
+   https://github.com/Xboxpig/workbuddy-desktop-linux
+   MIT License — Copyright (c) 2025 ilysenko
+   Fetched at commit 66103bafff518ad17a64ca34dbdbee0d2085f4a3.
+   Consumed with patches/deb-tool.patch applied: turns the app tree into a
+   .deb, and carries the URI-scheme / dependency / WM_CLASS fixes.
+
+3. Electron
+   https://github.com/electron/electron
+   MIT License. A Linux runtime of the exact version bundled in the DMG is
+   downloaded at build time and grafted onto the converted payload.
+
+Neither upstream project is affiliated with Tencent. See DISCLAIMER.md.
