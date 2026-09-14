@@ -38,6 +38,9 @@ app.asar
 app.asar.unpacked/
 resources/
 *.node
+*.so
+*.dylib
+*.dll
 electron
 
 # Build scratch space

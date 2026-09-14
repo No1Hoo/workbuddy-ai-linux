@@ -1,0 +1,69 @@
+name: 仓库卫生守卫
+
+# 本仓库只分发构建工具链，绝不分发 WorkBuddy AI 本体。
+# 这个工作流的唯一职责：一旦有厂商二进制 / 打包产物 / 解包载荷想混进
+# git 历史，立刻把 CI 拦红。历史一旦污染就得 filter-repo + 强推，代价太大。
+#
+# 检查内容见 scripts/check-no-proprietary.sh。
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: guard-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  guard:
+    name: 校验无专有产物
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+        with:
+          # 历史路径扫描需要完整历史；浅克隆会跳过该步
+          fetch-depth: 0
+
+      - name: 仓库卫生守卫
+        run: bash scripts/check-no-proprietary.sh
+
+      - name: ShellCheck
+        run: |
+          set -euo pipefail
+          if ! command -v shellcheck >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq shellcheck
+          fi
+          echo "shellcheck $(shellcheck --version | sed -n 2p | awk '{print $2}')"
+          mapfile -t scripts < <(git ls-files '*.sh')
+          echo "检查 ${#scripts[@]} 个脚本"
+          shellcheck --external-sources --norc "${scripts[@]}"
+
+      - name: bash 语法检查
+        run: |
+          set -euo pipefail
+          mapfile -t scripts < <(git ls-files '*.sh')
+          for f in "${scripts[@]}"; do
+            bash -n "$f"
+            echo "  ok  $f"
+          done
+
+      - name: 脚本可执行位
+        run: |
+          set -euo pipefail
+          bad=0
+          while IFS= read -r f; do
+            if [ ! -x "$f" ]; then
+              echo "  ::error file=$f::脚本缺少可执行位"
+              bad=1
+            fi
+          done < <(git ls-files '*.sh')
+          [ "$bad" -eq 0 ] && echo "全部脚本都有可执行位"
+          exit "$bad"

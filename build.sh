@@ -168,7 +168,8 @@ fetch_inputs() {
 
 # ---------------------------------------------------------- stage 1: app ----
 build_app() {
-    local log="$LOG_DIR/convert-$(date +%Y%m%d-%H%M%S).log"
+    local log
+    log="$LOG_DIR/convert-$(date +%Y%m%d-%H%M%S).log"
     info "converting DMG to a Linux app (log: $log)"
     /usr/bin/rm -rf "$APP_DIR"
     rm -rf "${TMP_DIR:?}"/*
@@ -215,7 +216,8 @@ build_deb() {
     done
     [ -n "$icon" ] || die "no icon found for the desktop entry"
 
-    local log="$LOG_DIR/deb-$(date +%Y%m%d-%H%M%S).log"
+    local log
+    log="$LOG_DIR/deb-$(date +%Y%m%d-%H%M%S).log"
     info "building .deb (log: $log)"
 
     env -i \

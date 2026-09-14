@@ -5,6 +5,8 @@ Ubuntu package, from the official macOS DMG, on your own machine.
 
 Rootless install supported. Login verified end to end.
 
+[![仓库卫生守卫](https://github.com/No1Hoo/workbuddy-ai-linux/actions/workflows/guard.yml/badge.svg)](https://github.com/No1Hoo/workbuddy-ai-linux/actions/workflows/guard.yml)
+
 > **Unofficial community project.** Not affiliated with, endorsed by, or
 > supported by Tencent. Read [`DISCLAIMER.md`](DISCLAIMER.md) before you start —
 > this repository ships **no vendor binaries**, by design.
@@ -210,9 +212,37 @@ workbuddy-ai-linux/
 │   ├── env-traps.md          host quirks that break the toolchain
 │   ├── UPSTREAM-NOTES.md     build/verification notes
 │   └── research-zh.md        survey of the project landscape (Chinese)
-├── scripts/                  helper scripts used during verification
+├── scripts/
+│   └── check-no-proprietary.sh   CI + 本地共用的仓库卫生守卫
+├── .github/workflows/
+│   └── guard.yml             runs the guard on every push / PR
 └── upstream/                 fetched by bootstrap.sh — NOT committed
 ```
+
+---
+
+## Repository hygiene guard
+
+This repository must never carry vendor payloads. `scripts/check-no-proprietary.sh`
+enforces that, and CI (`.github/workflows/guard.yml`) runs it on every push and
+pull request. Run it locally before you commit:
+
+```bash
+./scripts/check-no-proprietary.sh
+```
+
+Five checks, all of which must pass:
+
+| # | Check | Catches |
+|---|---|---|
+| 1 | `.gitignore` 关键规则仍在 | 有人误删了 `*.dmg` / `/upstream/` / `app.asar` 之类的规则 |
+| 2 | `git check-ignore` 探针（29 条路径） | 规则写着但**没生效**（被后面的否定式覆盖、锚点写错等） |
+| 3 | 已跟踪文件扫描 | 真被提交进来的产物：目录 / 文件名 / 扩展名 / 体积 > 2 MB / 真实文件类型 |
+| 4 | 历史路径扫描 | 提交过又删掉的产物——只查工作区会漏掉 |
+| 5 | 必备文件 | `README.md` / `LICENSE` / `DISCLAIMER.md` / `.gitignore` |
+
+第 3 项不只看扩展名，还会用 `file(1)` 读真实类型——把 ELF 改名为 `.txt`
+照样拦得住。CI 里另外还跑 ShellCheck、`bash -n` 和可执行位检查。
 
 ---
 

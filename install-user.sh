@@ -42,10 +42,12 @@ if [ "${1:-}" = "--uninstall" ]; then
     log "removing WorkBuddy AI from $PREFIX"
     rm -rf "$APP_DST"
     rm -f  "$BIN_DST" "$DESKTOP_DST" "$ICON_DST" "$MIME_PKG_DIR/$PKG_NAME.xml"
-    command -v update-desktop-database >/dev/null 2>&1 && \
+    if command -v update-desktop-database >/dev/null 2>&1; then
         update-desktop-database "$DESKTOP_DIR" 2>/dev/null || true
-    command -v update-mime-database >/dev/null 2>&1 && \
+    fi
+    if command -v update-mime-database >/dev/null 2>&1; then
         update-mime-database "$PREFIX/share/mime" 2>/dev/null || true
+    fi
     log "done. User data in ~/.workbuddy-ai was left untouched."
     exit 0
 fi
@@ -149,12 +151,14 @@ cat > "$MIME_PKG_DIR/$PKG_NAME.xml" <<'EOF'
 </mime-info>
 EOF
 
-command -v update-mime-database >/dev/null 2>&1 && \
-    update-mime-database "$PREFIX/share/mime" 2>/dev/null || \
-    warn "update-mime-database failed (not fatal)"
-command -v update-desktop-database >/dev/null 2>&1 && \
-    update-desktop-database "$DESKTOP_DIR" 2>/dev/null || \
-    warn "update-desktop-database failed (not fatal)"
+if command -v update-mime-database >/dev/null 2>&1; then
+    update-mime-database "$PREFIX/share/mime" 2>/dev/null \
+        || warn "update-mime-database failed (not fatal)"
+fi
+if command -v update-desktop-database >/dev/null 2>&1; then
+    update-desktop-database "$DESKTOP_DIR" 2>/dev/null \
+        || warn "update-desktop-database failed (not fatal)"
+fi
 
 # workbuddy-ai : product.json deepLinkSchemes — the OAuth redirect_uri base
 # workbuddy    : hard-coded inside the bundle for internal deep links

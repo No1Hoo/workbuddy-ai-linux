@@ -61,9 +61,8 @@ if [ -z "$XAUTH" ]; then
     done
 fi
 
-for tool in xdotool; do
-    command -v "$tool" >/dev/null 2>&1 || { echo "[verify] $tool is required (apt-get install xdotool)" >&2; exit 1; }
-done
+command -v xdotool >/dev/null 2>&1 \
+    || { echo "[verify] xdotool is required (apt-get install xdotool)" >&2; exit 1; }
 
 # ------------------------------------------------------- clean old instance --
 pkill -f "$PROC_PATTERN" 2>/dev/null || true
